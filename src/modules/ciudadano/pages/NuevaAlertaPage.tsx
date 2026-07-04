@@ -3,29 +3,21 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { ciudadanoApi } from '@/modules/ciudadano/api/ciudadanoApi'
+import { publicoApi } from '@/modules/ciudadano/api/publicoApi'
 import { registrarAlertaSchema, type RegistrarAlertaFormData } from '@/modules/ciudadano/schemas/ciudadanoSchemas'
 import {
   VOLUMENES, CRITICIDADES,
   VOLUMEN_LABEL, CRITICIDAD_LABEL,
   type AlertaCiudadanaResponseDto,
 } from '@/modules/ciudadano/types/ciudadanoTypes'
-import { httpClient } from '@/shared/api/httpClient'
-import type { ApiResponse, PageResult } from '@/shared/types/common'
 
 // Tenant fijo para el portal público (en producción vendría de config/subdominio)
 const TENANT_ID = import.meta.env.VITE_TENANT_ID as string | undefined ?? '00000000-0000-0000-0000-000000000001'
 
-interface DistritoPublico { id: string; nombre: string }
-
 function useDistritosPublicos() {
   return useQuery({
     queryKey: ['publico', 'distritos'],
-    queryFn: () =>
-      httpClient
-        .get<ApiResponse<PageResult<DistritoPublico>>>('/api/v1/operacion/distritos', {
-          params: { page: 0, size: 100 },
-        })
-        .then((r) => r.data.data.content),
+    queryFn: () => publicoApi.listarDistritos(),
   })
 }
 
