@@ -10,9 +10,7 @@ import {
   VOLUMEN_LABEL, CRITICIDAD_LABEL,
   type AlertaCiudadanaResponseDto,
 } from '@/modules/ciudadano/types/ciudadanoTypes'
-
-// Tenant fijo para el portal público (en producción vendría de config/subdominio)
-const TENANT_ID = import.meta.env.VITE_TENANT_ID as string | undefined ?? '00000000-0000-0000-0000-000000000001'
+import { env } from '@/app/config/env'
 
 function useDistritosPublicos() {
   return useQuery({
@@ -93,7 +91,7 @@ export function NuevaAlertaPage() {
 
   const registrar = useMutation({
     mutationFn: (data: RegistrarAlertaFormData) =>
-      ciudadanoApi.registrarAlerta(TENANT_ID, { ...data, fuente: data.fuente ?? 'WEB' }),
+      ciudadanoApi.registrarAlerta(env.tenantId, { ...data, fuente: data.fuente ?? 'WEB' }),
     onSuccess: (res) => setConfirmacion(res.data),
   })
 
