@@ -1,19 +1,6 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { httpClient } from '@/shared/api/httpClient'
-import type { ApiResponse, PageResult } from '@/shared/types/common'
-
-interface DistritoPublico { id: string; nombre: string }
-interface ZonaPublica { id: string; nombre: string; codigo: string; distritoId: string; tipoZona: string }
-interface HorarioPublico {
-  id: string
-  zonaId: string
-  diaSemana: number
-  horaInicio: string
-  horaFin: string
-  observacion: string | null
-  estado: string
-}
+import { publicoApi, type HorarioPublico } from '@/modules/ciudadano/api/publicoApi'
 
 const DIAS: Record<number, string> = {
   1: 'Lunes', 2: 'Martes', 3: 'Miércoles', 4: 'Jueves',
@@ -28,12 +15,7 @@ function fmtHora(t: string) {
 function useDistritosPublicos() {
   return useQuery({
     queryKey: ['publico', 'distritos'],
-    queryFn: () =>
-      httpClient
-        .get<ApiResponse<PageResult<DistritoPublico>>>('/api/v1/operacion/distritos', {
-          params: { page: 0, size: 100 },
-        })
-        .then((r) => r.data.data.content),
+    queryFn: () => publicoApi.listarDistritos(),
   })
 }
 
@@ -41,11 +23,7 @@ function useZonasPorDistrito(distritoId: string | null) {
   return useQuery({
     queryKey: ['publico', 'zonas', distritoId],
     queryFn: () =>
-      httpClient
-        .get<ApiResponse<PageResult<ZonaPublica>>>('/api/v1/operacion/zonas', {
-          params: { page: 0, size: 100 },
-        })
-        .then((r) => r.data.data.content.filter((z) => z.distritoId === distritoId)),
+      publicoApi.listarZonas().then((zonas) => zonas.filter((z) => z.distritoId === distritoId)),
     enabled: !!distritoId,
   })
 }
@@ -54,11 +32,7 @@ function useHorariosPorZona(zonaId: string | null) {
   return useQuery({
     queryKey: ['publico', 'horarios', zonaId],
     queryFn: () =>
-      httpClient
-        .get<ApiResponse<PageResult<HorarioPublico>>>('/api/v1/operacion/horarios-recoleccion', {
-          params: { zonaId, page: 0, size: 50 },
-        })
-        .then((r) => r.data.data.content.filter((h) => h.estado === 'ACTIVO')),
+      publicoApi.listarHorarios(zonaId!).then((hs) => hs.filter((h) => h.estado === 'ACTIVO')),
     enabled: !!zonaId,
   })
 }
