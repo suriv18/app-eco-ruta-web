@@ -5,6 +5,9 @@ const AUTH_ERROR_MESSAGES: Record<string, string> = {
   TOKEN_INVALIDO: 'Sesión inválida. Por favor inicia sesión nuevamente.',
   TOKEN_EXPIRADO: 'Tu sesión ha expirado. Por favor inicia sesión nuevamente.',
   USUARIO_SIN_PERMISO: 'No tienes permisos para realizar esta acción.',
+  TIMEOUT: 'El servidor no respondió a tiempo. Intenta nuevamente.',
+  NETWORK_ERROR: 'No se pudo conectar con el backend. Abre el sistema desde http://localhost:5173/login y verifica que la API esté activa.',
+  ERROR_DESCONOCIDO: 'No se pudo completar el acceso. Revisa la conexión e intenta nuevamente.',
 }
 
 export function getAuthErrorMessage(code?: string): string {

@@ -12,7 +12,7 @@ export function useLogin() {
   return useMutation({
     mutationFn: (data: LoginFormData) => authApi.login(data),
     onSuccess: (response) => {
-      const { user, accessToken, refreshToken } = response.data
+      const { accessToken, refreshToken, user } = response.data
       setAuth(user, accessToken, refreshToken)
       navigate(ROUTES.DASHBOARD)
     },

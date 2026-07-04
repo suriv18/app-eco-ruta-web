@@ -7,9 +7,10 @@ import { ROUTES } from '@/app/config/routePaths'
 export function useLogout() {
   const navigate = useNavigate()
   const logout = useAuthStore((s) => s.logout)
+  const refreshToken = useAuthStore((s) => s.refreshToken)
 
   return useMutation({
-    mutationFn: () => authApi.logout(),
+    mutationFn: () => authApi.logout({ refreshToken: refreshToken ?? '' }),
     onSettled: () => {
       logout()
       navigate(ROUTES.LOGIN)

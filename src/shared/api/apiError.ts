@@ -22,6 +22,7 @@ export function extractApiError(error: unknown): ApiError {
       return new ApiError(data.error.code, data.error.message, data.error.errors ?? [])
     }
     if (axiosError.code === 'ECONNABORTED') return new ApiError('TIMEOUT', 'Tiempo de espera agotado')
+    if (!axiosError.response) return new ApiError('NETWORK_ERROR', 'No se pudo conectar con el servidor')
   }
   return new ApiError('ERROR_DESCONOCIDO', 'Ocurrió un error inesperado')
 }

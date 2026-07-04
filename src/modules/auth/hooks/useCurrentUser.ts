@@ -12,7 +12,8 @@ export function useCurrentUser() {
       const response = await authApi.me()
       // Sync updated user data into store (roles can change server-side)
       if (accessToken && refreshToken) {
-        setAuth(response.data, accessToken, refreshToken)
+        const roles = response.data.roles.length > 0 ? response.data.roles : (user?.roles ?? [])
+        setAuth({ ...response.data, roles }, accessToken, refreshToken)
       }
       return response.data
     },
@@ -20,6 +21,7 @@ export function useCurrentUser() {
     staleTime: 5 * 60 * 1000,
     retry: false,
     initialData: user ?? undefined,
+    initialDataUpdatedAt: 0,
     throwOnError: false,
     // If the server says the session is invalid, log out silently
     meta: { onError: () => logout() },

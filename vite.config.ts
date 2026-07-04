@@ -8,5 +8,8 @@ export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, './src') },
   },
+  define: {
+    global: 'globalThis',
+  },
   server: { port: 5173 },
 })
